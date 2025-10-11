@@ -107,13 +107,13 @@ export const Header = () => {
             ) : (
               <>
                 <Button
-                  variant={isActive('/') ? 'default' : 'ghost'}
+                  variant={isActive('/analysis') ? 'default' : 'ghost'}
                   size="sm"
                   asChild
                 >
-                  <Link to="/">
-                    <HomeIcon className="w-4 h-4 mr-2" />
-                    Home
+                  <Link to="/analysis">
+                    <ScanIcon className="w-4 h-4 mr-2" />
+                    Analyze
                   </Link>
                 </Button>
                 
