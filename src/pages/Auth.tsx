@@ -101,7 +101,7 @@ const Auth = () => {
       <Card className="w-full max-w-md p-8 shadow-soft">
         <div className="flex items-center justify-center gap-2 mb-8">
           <LeafIcon className="w-8 h-8 text-primary" />
-          <h1 className="text-2xl font-bold">EcoScan</h1>
+          <h1 className="text-2xl font-bold">Neurec AI</h1>
         </div>
 
         <Tabs defaultValue="signin" className="w-full">

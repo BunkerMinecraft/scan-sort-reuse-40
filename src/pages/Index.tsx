@@ -32,7 +32,7 @@ const Index = () => {
         <header className="bg-background/80 backdrop-blur-sm border-b border-border/50 p-4">
           <div className="max-w-md mx-auto flex items-center justify-center gap-2">
             <LeafIcon className="w-8 h-8 text-primary" />
-            <h1 className="text-2xl font-bold text-foreground">EcoScan</h1>
+            <h1 className="text-2xl font-bold text-foreground">Neurec AI</h1>
           </div>
         </header>
 
@@ -106,7 +106,7 @@ const Index = () => {
           </Button>
           <div className="flex items-center gap-2 flex-1">
             <LeafIcon className="w-6 h-6 text-primary" />
-            <h1 className="text-xl font-semibold">EcoScan</h1>
+            <h1 className="text-xl font-semibold">Neurec AI</h1>
           </div>
         </div>
       </header>

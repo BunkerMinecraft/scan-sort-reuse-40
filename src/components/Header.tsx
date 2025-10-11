@@ -47,7 +47,7 @@ export const Header = () => {
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <LeafIcon className="w-8 h-8 text-primary" />
-            <h1 className="text-2xl font-bold text-foreground">EcoScan</h1>
+            <h1 className="text-2xl font-bold text-foreground">Neurec AI</h1>
           </Link>
           
           <nav className="flex items-center gap-2">
