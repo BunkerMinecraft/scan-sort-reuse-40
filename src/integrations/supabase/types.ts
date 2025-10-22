@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      image_analyses: {
+        Row: {
+          category: string
+          confidence: number
+          created_at: string
+          id: string
+          image_url: string
+          material: string | null
+          recommendations: string | null
+          user_id: string
+        }
+        Insert: {
+          category: string
+          confidence: number
+          created_at?: string
+          id?: string
+          image_url: string
+          material?: string | null
+          recommendations?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string
+          confidence?: number
+          created_at?: string
+          id?: string
+          image_url?: string
+          material?: string | null
+          recommendations?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

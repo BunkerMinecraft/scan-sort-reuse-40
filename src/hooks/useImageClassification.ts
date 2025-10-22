@@ -64,9 +64,11 @@ export const useImageClassification = () => {
     try {
       const classification = await classifyImage(imageData);
       setResult(classification);
+      return classification;
     } catch (err) {
       setError('Failed to classify image. Please try again.');
       console.error('Classification error:', err);
+      return null;
     } finally {
       setIsProcessing(false);
     }

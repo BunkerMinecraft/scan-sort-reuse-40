@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ScanIcon } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const Analysis = () => {
   const navigate = useNavigate();
@@ -21,7 +22,23 @@ const Analysis = () => {
   }, [user, loading, navigate]);
 
   const handleImageCapture = async (imageData: string) => {
-    await classifyImageData(imageData);
+    const result = await classifyImageData(imageData);
+    
+    // Save to database if user is logged in and classification was successful
+    if (user && result) {
+      try {
+        await supabase.from('image_analyses').insert({
+          user_id: user.id,
+          image_url: imageData,
+          category: result.category,
+          confidence: result.confidence,
+          material: result.material,
+          recommendations: result.recommendations.join(', '),
+        });
+      } catch (error) {
+        console.error('Error saving analysis:', error);
+      }
+    }
   };
 
   const handleNewScan = () => {
