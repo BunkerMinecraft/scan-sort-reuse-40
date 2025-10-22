@@ -1,14 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CameraComponent } from '@/components/Camera';
 import { ClassificationResult } from '@/components/ClassificationResult';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { useImageClassification } from '@/hooks/useImageClassification';
+import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ScanIcon } from 'lucide-react';
 
 const Analysis = () => {
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
   const { classifyImageData, isProcessing, result, error, resetClassification } = useImageClassification();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/auth');
+    }
+  }, [user, loading, navigate]);
 
   const handleImageCapture = async (imageData: string) => {
     await classifyImageData(imageData);
