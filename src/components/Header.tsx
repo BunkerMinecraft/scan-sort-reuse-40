@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LeafIcon, HomeIcon, LayoutDashboardIcon, ScanIcon, UserIcon, LogOutIcon } from 'lucide-react';
+import { LeafIcon, HomeIcon, LayoutDashboardIcon, ScanIcon, UserIcon, LogOutIcon, ShieldIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/hooks/useAuth';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -22,6 +23,7 @@ interface Profile {
 export const Header = () => {
   const location = useLocation();
   const { user, signOut } = useAuth();
+  const { isAdmin } = useIsAdmin();
   const [profile, setProfile] = useState<Profile | null>(null);
   
   const isActive = (path: string) => location.pathname === path;
@@ -96,6 +98,14 @@ export const Header = () => {
                         Profile
                       </Link>
                     </DropdownMenuItem>
+                    {isAdmin && (
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin" className="cursor-pointer">
+                          <ShieldIcon className="mr-2 h-4 w-4" />
+                          Admin
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={signOut} className="cursor-pointer">
                       <LogOutIcon className="mr-2 h-4 w-4" />
