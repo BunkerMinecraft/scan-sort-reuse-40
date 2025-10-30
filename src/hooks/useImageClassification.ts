@@ -1,54 +1,109 @@
 import { useState, useCallback } from 'react';
 import { ClassificationData } from '@/components/ClassificationResult';
 
-// Mock classification service - In production, this would use ML models
-const classifyImage = async (imageData: string): Promise<ClassificationData> => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 2000));
+const API_ENDPOINT = 'https://BunkerMinecraft-NeuRecAI.hf.space/api/predict/';
+
+// Map API material types to our categories and recommendations
+const mapMaterialToCategory = (material: string, confidence: number): ClassificationData => {
+  const materialLower = material.toLowerCase();
   
-  // Mock classification results - in reality this would use Hugging Face transformers
-  const categories: ClassificationData['category'][] = ['recyclable', 'reusable', 'trash'];
-  const materials = ['Plastic (PET)', 'Glass', 'Aluminum', 'Paper', 'Cardboard', 'Electronics', 'Organic waste'];
-  
-  const mockResults: Record<string, ClassificationData> = {
-    recyclable: {
-      category: 'recyclable',
-      confidence: 0.87,
-      material: materials[Math.floor(Math.random() * 4)], // First 4 are recyclable
-      recommendations: [
-        'Clean the item before recycling',
-        'Remove any labels or caps',
-        'Check local recycling guidelines',
-        'Place in appropriate recycling bin'
-      ]
-    },
-    reusable: {
-      category: 'reusable',
-      confidence: 0.79,
-      material: 'Textile/Fabric',
-      recommendations: [
-        'Consider donating if in good condition',
-        'Repurpose for cleaning rags',
-        'Use for craft projects',
-        'Check local reuse centers'
-      ]
-    },
-    trash: {
-      category: 'trash',
-      confidence: 0.92,
-      material: materials[Math.floor(Math.random() * materials.length)],
-      recommendations: [
-        'Dispose in general waste bin',
-        'Consider if item can be repaired first',
-        'Look for specialized disposal programs',
-        'Minimize similar purchases in future'
-      ]
-    }
+  const recommendationsByMaterial: Record<string, string[]> = {
+    battery: [
+      'Take to designated battery recycling points',
+      'Never dispose in regular trash',
+      'Check local e-waste collection centers',
+      'Keep batteries dry and stored safely'
+    ],
+    glass: [
+      'Rinse and clean before recycling',
+      'Remove caps and lids',
+      'Check if your area accepts glass recycling',
+      'Separate by color if required'
+    ],
+    metal: [
+      'Clean and dry the metal item',
+      'Remove any non-metal attachments',
+      'Aluminum and steel are highly recyclable',
+      'Place in metal recycling bin'
+    ],
+    organic: [
+      'Compost if possible',
+      'Use for garden mulch',
+      'Check local organic waste programs',
+      'Keep separate from other waste'
+    ],
+    paper: [
+      'Keep paper dry and clean',
+      'Remove any plastic attachments',
+      'Flatten boxes and cardboard',
+      'Place in paper recycling bin'
+    ],
+    plastic: [
+      'Check the recycling number on the item',
+      'Rinse and clean before recycling',
+      'Remove caps and labels if possible',
+      'Verify local plastic recycling guidelines'
+    ]
   };
-  
-  // Randomly select a category for demo
-  const selectedCategory = categories[Math.floor(Math.random() * categories.length)];
-  return mockResults[selectedCategory];
+
+  // Determine category based on material type
+  let category: ClassificationData['category'];
+  if (['battery', 'glass', 'metal', 'paper', 'plastic'].includes(materialLower)) {
+    category = 'recyclable';
+  } else if (materialLower === 'organic') {
+    category = 'reusable';
+  } else {
+    category = 'trash';
+  }
+
+  return {
+    category,
+    confidence,
+    material: material.charAt(0).toUpperCase() + material.slice(1),
+    recommendations: recommendationsByMaterial[materialLower] || [
+      'Dispose according to local guidelines',
+      'Consider if item can be repurposed',
+      'Check with local waste management',
+      'Minimize similar purchases in future'
+    ]
+  };
+};
+
+const classifyImage = async (imageData: string): Promise<ClassificationData> => {
+  try {
+    const response = await fetch(API_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        data: [{ url: imageData }]
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`API request failed: ${response.status}`);
+    }
+
+    const result = await response.json();
+    
+    // Check for safety violations or invalid responses
+    if (!result.data || !Array.isArray(result.data) || result.data.length < 2) {
+      throw new Error('Invalid API response format');
+    }
+
+    const predictedLabel = result.data[0]?.label;
+    const confidence = result.data[1];
+
+    if (!predictedLabel) {
+      throw new Error('⚠️ For safety, please upload a recyclable material image only.');
+    }
+
+    return mapMaterialToCategory(predictedLabel, confidence);
+  } catch (error) {
+    console.error('Classification error:', error);
+    throw error;
+  }
 };
 
 export const useImageClassification = () => {
