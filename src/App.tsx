@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./hooks/useAuth";
 import { Header } from "./components/Header";
+import { AIHelpAgent } from "./components/AIHelpAgent";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Analysis from "./pages/Analysis";
@@ -33,6 +34,7 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <AIHelpAgent />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

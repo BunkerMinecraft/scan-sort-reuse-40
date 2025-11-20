@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LeafIcon, HomeIcon, LayoutDashboardIcon, ScanIcon, UserIcon, LogOutIcon, ShieldIcon } from 'lucide-react';
+import { LeafIcon, HomeIcon, LayoutDashboardIcon, ScanIcon, UserIcon, LogOutIcon, ShieldIcon, MoonIcon, SunIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useTheme } from 'next-themes';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -25,6 +26,7 @@ export const Header = () => {
   const { user, signOut } = useAuth();
   const { isAdmin } = useIsAdmin();
   const [profile, setProfile] = useState<Profile | null>(null);
+  const { theme, setTheme } = useTheme();
   
   const isActive = (path: string) => location.pathname === path;
 
@@ -75,6 +77,19 @@ export const Header = () => {
                     <ScanIcon className="w-4 h-4 mr-2" />
                     Analyze
                   </Link>
+                </Button>
+                
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                  className="w-10 h-10 p-0"
+                >
+                  {theme === 'dark' ? (
+                    <SunIcon className="w-4 h-4" />
+                  ) : (
+                    <MoonIcon className="w-4 h-4" />
+                  )}
                 </Button>
                 
                 <DropdownMenu>
