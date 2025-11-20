@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import { ClassificationData } from '@/components/ClassificationResult';
-
-const API_ENDPOINT = 'https://BunkerMinecraft-NeuRecAI.hf.space/api/predict/';
+import { Client } from '@gradio/client';
 
 // Map API material types to our categories and recommendations
 const mapMaterialToCategory = (material: string, confidence: number): ClassificationData => {
@@ -69,32 +68,40 @@ const mapMaterialToCategory = (material: string, confidence: number): Classifica
   };
 };
 
+// Convert base64 data URL to Blob
+const dataURLtoBlob = (dataURL: string): Blob => {
+  const arr = dataURL.split(',');
+  const mime = arr[0].match(/:(.*?);/)?.[1] || 'image/png';
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
+};
+
 const classifyImage = async (imageData: string): Promise<ClassificationData> => {
   try {
-    const response = await fetch(API_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        data: [{ url: imageData }]
-      })
+    // Convert base64 image to Blob
+    const imageBlob = dataURLtoBlob(imageData);
+
+    // Connect to Hugging Face Space
+    const client = await Client.connect("BunkerMinecraft/NeuRecAI");
+
+    // Send prediction request
+    const result = await client.predict("/predict", {
+      image: imageBlob
     });
 
-    if (!response.ok) {
-      throw new Error(`API request failed: ${response.status}`);
-    }
+    console.log('API Response:', result);
 
-    const result = await response.json();
-    
-    // Check for safety violations or invalid responses
-    if (!result.data || !Array.isArray(result.data) || result.data.length < 2) {
-      throw new Error('Invalid API response format');
-    }
+    // Extract class and confidence from response
+    const data = result.data as any;
+    const predictedLabel = data?.label || data?.[0]?.label;
+    const confidence = data?.confidence || data?.[0]?.confidence || data?.[1];
 
-    const predictedLabel = result.data[0]?.label;
-    const confidence = result.data[1];
-
+    // Safety check for unsafe or unrelated content
     if (!predictedLabel) {
       throw new Error('⚠️ For safety, please upload a recyclable material image only.');
     }
