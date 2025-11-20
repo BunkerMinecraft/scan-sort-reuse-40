@@ -61,6 +61,17 @@ export const CameraComponent = ({ onImageCapture, isProcessing }: CameraComponen
   const handleFileInput = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      // Validate file size (10MB limit)
+      const maxSizeInBytes = 10 * 1024 * 1024;
+      if (file.size > maxSizeInBytes) {
+        toast({
+          title: "File too large",
+          description: "Image must be less than 10MB",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const reader = new FileReader();
       reader.onload = (e) => {
         const result = e.target?.result as string;
@@ -69,7 +80,7 @@ export const CameraComponent = ({ onImageCapture, isProcessing }: CameraComponen
       };
       reader.readAsDataURL(file);
     }
-  }, [onImageCapture]);
+  }, [onImageCapture, toast]);
 
   const retakePicture = () => {
     setImagePreview(null);
