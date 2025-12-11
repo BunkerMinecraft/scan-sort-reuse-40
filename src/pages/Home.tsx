@@ -2,10 +2,8 @@ import { Link } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ScanIcon, RecycleIcon, TrendingUpIcon, LeafIcon } from 'lucide-react';
-
 const Home = () => {
-  return (
-    <div className="min-h-screen bg-gradient-subtle">
+  return <div className="min-h-screen bg-gradient-subtle">
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-16 text-center">
         <div className="max-w-3xl mx-auto space-y-6">
@@ -23,11 +21,7 @@ const Home = () => {
           </p>
           
           <div className="flex gap-4 justify-center">
-            <Button
-              asChild
-              size="lg"
-              className="bg-gradient-eco shadow-soft hover:shadow-glow transition-all duration-300"
-            >
+            <Button asChild size="lg" className="bg-gradient-eco shadow-soft hover:shadow-glow transition-all duration-300">
               <Link to="/analysis">
                 <ScanIcon className="w-5 h-5 mr-2" />
                 Start Analyzing
@@ -48,7 +42,7 @@ const Home = () => {
             <div className="inline-flex items-center justify-center p-3 bg-recyclable/20 rounded-full">
               <ScanIcon className="w-8 h-8 text-recyclable" />
             </div>
-            <h3 className="text-xl font-semibold">Instant Analysis</h3>
+            <h3 className="text-xl font-bold">Instant Analysis</h3>
             <p className="text-muted-foreground">
               Upload or capture an image and get instant classification results powered by machine learning.
             </p>
@@ -58,7 +52,7 @@ const Home = () => {
             <div className="inline-flex items-center justify-center p-3 bg-reusable/20 rounded-full">
               <RecycleIcon className="w-8 h-8 text-reusable" />
             </div>
-            <h3 className="text-xl font-semibold">Eco-Friendly Tips</h3>
+            <h3 className="text-xl font-bold">Eco-Friendly Tips</h3>
             <p className="text-muted-foreground">
               Receive actionable recommendations on how to properly dispose or reuse each item.
             </p>
@@ -68,7 +62,7 @@ const Home = () => {
             <div className="inline-flex items-center justify-center p-3 bg-primary/20 rounded-full">
               <TrendingUpIcon className="w-8 h-8 text-primary" />
             </div>
-            <h3 className="text-xl font-semibold">Track Progress</h3>
+            <h3 className="text-xl font-bold">Track Progress</h3>
             <p className="text-muted-foreground">
               Monitor your environmental impact and see your contribution to sustainability over time.
             </p>
@@ -85,12 +79,7 @@ const Home = () => {
           <p className="text-white/90 mb-6">
             Join thousands of users making smarter, more sustainable waste decisions every day.
           </p>
-          <Button
-            asChild
-            size="lg"
-            variant="secondary"
-            className="shadow-soft"
-          >
+          <Button asChild size="lg" variant="secondary" className="shadow-soft">
             <Link to="/analysis">
               <ScanIcon className="w-5 h-5 mr-2" />
               Get Started Now
@@ -98,8 +87,6 @@ const Home = () => {
           </Button>
         </Card>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default Home;
