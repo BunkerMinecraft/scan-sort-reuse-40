@@ -4,26 +4,27 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { CameraIcon, RotateCcwIcon, ImageIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-
 interface CameraComponentProps {
   onImageCapture: (imageData: string) => void;
   isProcessing: boolean;
 }
-
-export const CameraComponent = ({ onImageCapture, isProcessing }: CameraComponentProps) => {
+export const CameraComponent = ({
+  onImageCapture,
+  isProcessing
+}: CameraComponentProps) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
-
   const takePicture = async () => {
     try {
       const image = await Camera.getPhoto({
         quality: 90,
         allowEditing: false,
         resultType: CameraResultType.DataUrl,
-        source: CameraSource.Camera,
+        source: CameraSource.Camera
       });
-
       if (image.dataUrl) {
         setImagePreview(image.dataUrl);
         onImageCapture(image.dataUrl);
@@ -33,20 +34,18 @@ export const CameraComponent = ({ onImageCapture, isProcessing }: CameraComponen
       toast({
         title: "Camera Error",
         description: "Failed to access camera. Please check permissions.",
-        variant: "destructive",
+        variant: "destructive"
       });
     }
   };
-
   const selectFromGallery = async () => {
     try {
       const image = await Camera.getPhoto({
         quality: 90,
         allowEditing: false,
         resultType: CameraResultType.DataUrl,
-        source: CameraSource.Photos,
+        source: CameraSource.Photos
       });
-
       if (image.dataUrl) {
         setImagePreview(image.dataUrl);
         onImageCapture(image.dataUrl);
@@ -57,7 +56,6 @@ export const CameraComponent = ({ onImageCapture, isProcessing }: CameraComponen
       fileInputRef.current?.click();
     }
   };
-
   const handleFileInput = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -67,13 +65,12 @@ export const CameraComponent = ({ onImageCapture, isProcessing }: CameraComponen
         toast({
           title: "File too large",
           description: "Image must be less than 10MB",
-          variant: "destructive",
+          variant: "destructive"
         });
         return;
       }
-
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = e => {
         const result = e.target?.result as string;
         setImagePreview(result);
         onImageCapture(result);
@@ -81,42 +78,21 @@ export const CameraComponent = ({ onImageCapture, isProcessing }: CameraComponen
       reader.readAsDataURL(file);
     }
   }, [onImageCapture, toast]);
-
   const retakePicture = () => {
     setImagePreview(null);
   };
-
-  return (
-    <div className="w-full max-w-md mx-auto">
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        onChange={handleFileInput}
-        className="hidden"
-      />
+  return <div className="w-full max-w-md mx-auto">
+      <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileInput} className="hidden" />
       
-      {imagePreview ? (
-        <Card className="p-4 space-y-4">
+      {imagePreview ? <Card className="p-4 space-y-4">
           <div className="aspect-square rounded-lg overflow-hidden bg-muted">
-            <img
-              src={imagePreview}
-              alt="Captured item"
-              className="w-full h-full object-cover"
-            />
+            <img src={imagePreview} alt="Captured item" className="w-full h-full object-cover" />
           </div>
-          <Button
-            variant="outline"
-            onClick={retakePicture}
-            disabled={isProcessing}
-            className="w-full"
-          >
+          <Button variant="outline" onClick={retakePicture} disabled={isProcessing} className="w-full">
             <RotateCcwIcon className="w-4 h-4 mr-2" />
             Retake Photo
           </Button>
-        </Card>
-      ) : (
-        <Card className="p-8">
+        </Card> : <Card className="p-8 border-4 border-solid shadow-xl">
           <div className="aspect-square rounded-lg border-2 border-dashed border-border bg-gradient-subtle flex items-center justify-center mb-6">
             <div className="text-center">
               <CameraIcon className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
@@ -127,27 +103,16 @@ export const CameraComponent = ({ onImageCapture, isProcessing }: CameraComponen
           </div>
           
           <div className="space-y-3">
-            <Button
-              onClick={takePicture}
-              disabled={isProcessing}
-              className="w-full bg-gradient-eco shadow-soft hover:shadow-glow transition-all duration-300"
-            >
+            <Button onClick={takePicture} disabled={isProcessing} className="w-full bg-gradient-eco shadow-soft hover:shadow-glow transition-all duration-300">
               <CameraIcon className="w-4 h-4 mr-2" />
               Take Photo
             </Button>
             
-            <Button
-              variant="outline"
-              onClick={selectFromGallery}
-              disabled={isProcessing}
-              className="w-full"
-            >
+            <Button variant="outline" onClick={selectFromGallery} disabled={isProcessing} className="w-full">
               <ImageIcon className="w-4 h-4 mr-2" />
               Choose from Gallery
             </Button>
           </div>
-        </Card>
-      )}
-    </div>
-  );
+        </Card>}
+    </div>;
 };
