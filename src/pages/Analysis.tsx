@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { CameraComponent } from '@/components/Camera';
 import { ClassificationResult } from '@/components/ClassificationResult';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
@@ -7,19 +7,13 @@ import { useImageClassification } from '@/hooks/useImageClassification';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ScanIcon } from 'lucide-react';
+import { ScanIcon, InfoIcon } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const Analysis = () => {
-  const navigate = useNavigate();
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   const { classifyImageData, isProcessing, result, error, resetClassification } = useImageClassification();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate('/auth');
-    }
-  }, [user, loading, navigate]);
 
   const handleImageCapture = async (imageData: string) => {
     const result = await classifyImageData(imageData);
@@ -55,6 +49,19 @@ const Analysis = () => {
               Upload or capture an image to classify waste items
             </p>
           </div>
+
+          {!user && (
+            <Alert className="border-primary/30 bg-primary/5">
+              <InfoIcon className="h-4 w-4 text-primary" />
+              <AlertDescription className="text-muted-foreground">
+                You're using guest mode. Results won't be saved.{' '}
+                <Link to="/auth" className="text-primary hover:underline font-medium">
+                  Sign up
+                </Link>{' '}
+                to track your progress!
+              </AlertDescription>
+            </Alert>
+          )}
 
           {!result && !isProcessing && (
             <CameraComponent 
