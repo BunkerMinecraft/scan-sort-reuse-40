@@ -93,7 +93,7 @@ export const CameraComponent = ({
             Retake Photo
           </Button>
         </Card> : <Card className="p-8 border-4 border-solid shadow-xl">
-          <div className="aspect-square rounded-lg border-2 border-dashed border-border bg-gradient-subtle flex items-center justify-center mb-6">
+          <div className="aspect-square rounded-lg border-2 border-dashed border-border bg-gradient-subtle flex items-center justify-center mb-6 shadow-glow">
             <div className="text-center">
               <CameraIcon className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
               <p className="text-muted-foreground">
