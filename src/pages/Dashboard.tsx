@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
-import { RecycleIcon, TrashIcon, PackageIcon, TrendingUpIcon } from 'lucide-react';
+import { RecycleIcon, TrashIcon, PackageIcon, TrendingUpIcon, InfoIcon } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface DashboardStats {
   itemsRecycled: number;
@@ -105,6 +107,19 @@ const Dashboard = () => {
               Track your environmental impact and waste classification history
             </p>
           </div>
+
+          {!user && (
+            <Alert className="border-primary/30 bg-primary/5">
+              <InfoIcon className="h-4 w-4 text-primary" />
+              <AlertDescription className="text-muted-foreground">
+                You're viewing as a guest. Stats won't be tracked.{' '}
+                <Link to="/auth" className="text-primary hover:underline font-medium">
+                  Sign up
+                </Link>{' '}
+                to save your progress and track your environmental impact!
+              </AlertDescription>
+            </Alert>
+          )}
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
