@@ -95,7 +95,7 @@ const Dashboard = () => {
             </p>
           </div>
 
-          {!user && <Alert className="border-primary/30 bg-primary/5">
+          {!user && <Alert className="border-primary/30 bg-primary/5 border">
               <InfoIcon className="h-4 w-4 text-primary" />
               <AlertDescription className="text-muted-foreground">
                 You're viewing as a guest. Stats won't be tracked.{' '}
