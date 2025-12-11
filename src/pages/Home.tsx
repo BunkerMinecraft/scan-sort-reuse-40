@@ -15,7 +15,7 @@ const Home = () => {
             Smart Waste Classification
           </h1>
           
-          <p className="text-xl text-muted-foreground mb-8">
+          <p className="text-xl mb-8 text-black">
             Use AI-powered image recognition to identify recyclable, reusable, and trash items instantly. 
             Make sustainable choices with confidence.
           </p>
@@ -43,7 +43,7 @@ const Home = () => {
               <ScanIcon className="w-8 h-8 text-recyclable" />
             </div>
             <h3 className="text-xl font-bold">Instant Analysis</h3>
-            <p className="text-muted-foreground">
+            <p className="text-black">
               Upload or capture an image and get instant classification results powered by machine learning.
             </p>
           </Card>
@@ -53,7 +53,7 @@ const Home = () => {
               <RecycleIcon className="w-8 h-8 text-reusable" />
             </div>
             <h3 className="text-xl font-bold">Eco-Friendly Tips</h3>
-            <p className="text-muted-foreground">
+            <p className="text-black">
               Receive actionable recommendations on how to properly dispose or reuse each item.
             </p>
           </Card>
@@ -63,7 +63,7 @@ const Home = () => {
               <TrendingUpIcon className="w-8 h-8 text-primary" />
             </div>
             <h3 className="text-xl font-bold">Track Progress</h3>
-            <p className="text-muted-foreground">
+            <p className="text-black">
               Monitor your environmental impact and see your contribution to sustainability over time.
             </p>
           </Card>
