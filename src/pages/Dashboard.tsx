@@ -189,10 +189,16 @@ const Dashboard = () => {
             ) : (
               <ChartContainer config={chartConfig} className="h-[200px] w-full">
                 <BarChart data={getWeeklyData()}>
+                  <defs>
+                    <linearGradient id="ecoGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(142, 76%, 50%)" />
+                      <stop offset="100%" stopColor="hsl(142, 76%, 36%)" />
+                    </linearGradient>
+                  </defs>
                   <XAxis dataKey="day" tickLine={false} axisLine={false} />
                   <YAxis tickLine={false} axisLine={false} allowDecimals={false} />
                   <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="count" fill="var(--color-count)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="count" fill="url(#ecoGradient)" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ChartContainer>
             )}
