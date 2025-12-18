@@ -1,15 +1,29 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
-import { RecycleIcon, TrashIcon, PackageIcon, TrendingUpIcon, InfoIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { RecycleIcon, TrashIcon, PackageIcon, TrendingUpIcon, InfoIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { BarChart, Bar, XAxis, YAxis } from 'recharts';
+import { startOfWeek, endOfWeek, addWeeks, subWeeks, format, eachDayOfInterval, isSameDay, parseISO } from 'date-fns';
+
 interface DashboardStats {
   itemsRecycled: number;
   itemsReused: number;
   trashItems: number;
   totalAnalyzed: number;
+}
+
+interface AnalysisRecord {
+  created_at: string;
+}
+
+interface WeeklyData {
+  day: string;
+  count: number;
 }
 const Dashboard = () => {
   const {
@@ -22,6 +36,9 @@ const Dashboard = () => {
     totalAnalyzed: 0
   });
   const [loading, setLoading] = useState(true);
+  const [analyses, setAnalyses] = useState<AnalysisRecord[]>([]);
+  const [currentWeekStart, setCurrentWeekStart] = useState(() => startOfWeek(new Date(), { weekStartsOn: 1 }));
+
   useEffect(() => {
     const fetchStats = async () => {
       if (!user) {
@@ -31,7 +48,7 @@ const Dashboard = () => {
       const {
         data,
         error
-      } = await supabase.from('image_analyses').select('category').eq('user_id', user.id);
+      } = await supabase.from('image_analyses').select('category, created_at').eq('user_id', user.id);
       if (error) {
         console.error('Error fetching analyses:', error);
         setLoading(false);
@@ -45,7 +62,6 @@ const Dashboard = () => {
         } else if (category === 'reusable') {
           acc.itemsReused++;
         } else {
-          // recyclable and other categories
           acc.itemsRecycled++;
         }
         return acc;
@@ -56,10 +72,34 @@ const Dashboard = () => {
         totalAnalyzed: 0
       });
       setStats(counts);
+      setAnalyses(data.map(d => ({ created_at: d.created_at })));
       setLoading(false);
     };
     fetchStats();
   }, [user]);
+
+  const getWeeklyData = (): WeeklyData[] => {
+    const weekEnd = endOfWeek(currentWeekStart, { weekStartsOn: 1 });
+    const days = eachDayOfInterval({ start: currentWeekStart, end: weekEnd });
+    
+    return days.map(day => {
+      const count = analyses.filter(a => isSameDay(parseISO(a.created_at), day)).length;
+      return {
+        day: format(day, 'EEE'),
+        count
+      };
+    });
+  };
+
+  const chartConfig = {
+    count: {
+      label: 'Items Analyzed',
+      color: 'hsl(var(--primary))'
+    }
+  };
+
+  const goToPreviousWeek = () => setCurrentWeekStart(prev => subWeeks(prev, 1));
+  const goToNextWeek = () => setCurrentWeekStart(prev => addWeeks(prev, 1));
   const statCards = [{
     label: 'Items Recycled',
     value: stats.itemsRecycled.toString(),
@@ -128,10 +168,34 @@ const Dashboard = () => {
 
           {/* Recent Activity */}
           <Card className="p-6 shadow-2xl">
-            <h2 className="text-2xl font-semibold mb-4">Recent Activity</h2>
-            <div className="text-center py-12 text-muted-foreground">
-              {stats.totalAnalyzed === 0 ? <p>No items analyzed yet. Start by analyzing your first item!</p> : <p>You have analyzed {stats.totalAnalyzed} items so far!</p>}
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-semibold">Recent Activity</h2>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="icon" onClick={goToPreviousWeek}>
+                  <ChevronLeftIcon className="h-4 w-4" />
+                </Button>
+                <span className="text-sm text-muted-foreground min-w-[140px] text-center">
+                  {format(currentWeekStart, 'MMM d')} - {format(endOfWeek(currentWeekStart, { weekStartsOn: 1 }), 'MMM d, yyyy')}
+                </span>
+                <Button variant="outline" size="icon" onClick={goToNextWeek}>
+                  <ChevronRightIcon className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
+            {!user ? (
+              <div className="text-center py-12 text-muted-foreground">
+                <p>Sign in to track your activity</p>
+              </div>
+            ) : (
+              <ChartContainer config={chartConfig} className="h-[200px] w-full">
+                <BarChart data={getWeeklyData()}>
+                  <XAxis dataKey="day" tickLine={false} axisLine={false} />
+                  <YAxis tickLine={false} axisLine={false} allowDecimals={false} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Bar dataKey="count" fill="var(--color-count)" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ChartContainer>
+            )}
           </Card>
 
           {/* Impact Summary */}
