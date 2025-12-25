@@ -22,7 +22,7 @@ const App = () => <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <Header />
           <Routes>
-            <Route path="/" element={<Home />} className="rounded-sm shadow-xl opacity-95" />
+            <Route path="/" element={<Home />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/analysis" element={<Analysis />} />
