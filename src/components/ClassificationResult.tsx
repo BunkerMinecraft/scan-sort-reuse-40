@@ -1,10 +1,10 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { RecycleIcon, RefreshCwIcon, TrashIcon, InfoIcon } from 'lucide-react';
+import { RecycleIcon, LeafIcon, TrashIcon, InfoIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export interface ClassificationData {
-  category: 'recyclable' | 'reusable' | 'trash';
+  category: 'recyclable' | 'compostable' | 'trash';
   confidence: number;
   material?: string;
   recommendations: string[];
@@ -18,8 +18,8 @@ const getCategoryIcon = (category: string) => {
   switch (category) {
     case 'recyclable':
       return <RecycleIcon className="w-5 h-5" />;
-    case 'reusable':
-      return <RefreshCwIcon className="w-5 h-5" />;
+    case 'compostable':
+      return <LeafIcon className="w-5 h-5" />;
     case 'trash':
       return <TrashIcon className="w-5 h-5" />;
     default:
@@ -31,7 +31,7 @@ const getCategoryColor = (category: string) => {
   switch (category) {
     case 'recyclable':
       return 'bg-recyclable text-recyclable-foreground';
-    case 'reusable':
+    case 'compostable':
       return 'bg-reusable text-reusable-foreground';
     case 'trash':
       return 'bg-trash text-trash-foreground';
@@ -44,8 +44,8 @@ const getCategoryTitle = (category: string) => {
   switch (category) {
     case 'recyclable':
       return 'Recyclable';
-    case 'reusable':
-      return 'Reusable';
+    case 'compostable':
+      return 'Compostable';
     case 'trash':
       return 'Trash';
     default:
@@ -94,7 +94,7 @@ export const ClassificationResult = ({ result }: ClassificationResultProps) => {
               className={cn(
                 "h-2 rounded-full transition-all duration-500 ease-out",
                 category === 'recyclable' && "bg-recyclable",
-                category === 'reusable' && "bg-reusable",
+                category === 'compostable' && "bg-reusable",
                 category === 'trash' && "bg-trash"
               )}
               style={{ width: `${confidence * 100}%` }}

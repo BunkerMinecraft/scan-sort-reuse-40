@@ -50,7 +50,7 @@ const mapMaterialToCategory = (material: string, confidence: number): Classifica
   if (['battery', 'glass', 'metal', 'paper', 'plastic'].includes(materialLower)) {
     category = 'recyclable';
   } else if (materialLower === 'organic') {
-    category = 'reusable';
+    category = 'compostable';
   } else {
     category = 'trash';
   }
