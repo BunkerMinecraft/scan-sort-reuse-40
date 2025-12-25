@@ -222,6 +222,21 @@ const Dashboard = () => {
               </div>
             </div>
           </Card>
+
+          {/* Impact Calculation Note */}
+          <Card className="p-4 border-muted">
+            <div className="flex items-start gap-3">
+              <InfoIcon className="h-5 w-5 text-muted-foreground mt-0.5 flex-shrink-0" />
+              <div className="text-sm text-muted-foreground">
+                <p className="font-medium text-foreground mb-2">How we calculate your impact:</p>
+                <ul className="space-y-1 list-disc list-inside">
+                  <li><span className="font-medium">CO₂ Saved:</span> 0.5 kg per recycled item (average emissions prevented by recycling vs. landfill)</li>
+                  <li><span className="font-medium">Waste Diverted:</span> 0.2 kg per recycled item (average weight of recyclable materials kept out of landfills)</li>
+                  <li><span className="font-medium">Trees Saved:</span> 1 tree per 10 recycled items (based on paper/cardboard recycling impact)</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
         </div>
       </div>
     </div>;
