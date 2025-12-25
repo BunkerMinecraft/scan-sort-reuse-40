@@ -207,7 +207,7 @@ const Dashboard = () => {
           {/* Impact Summary */}
           <Card className="p-6 bg-gradient-eco text-white shadow-2xl">
             <h2 className="text-2xl font-semibold mb-4">Your Environmental Impact</h2>
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-3 gap-6 mb-6">
               <div>
                 <p className="text-white/80 text-sm mb-1">CO₂ Saved</p>
                 <p className="text-3xl font-bold">{(stats.itemsRecycled * 0.5).toFixed(1)} kg</p>
@@ -221,19 +221,17 @@ const Dashboard = () => {
                 <p className="text-3xl font-bold">{Math.floor(stats.itemsRecycled / 10)}</p>
               </div>
             </div>
-          </Card>
-
-          {/* Impact Calculation Note */}
-          <Card className="p-4 border-muted">
-            <div className="flex items-start gap-3">
-              <InfoIcon className="h-5 w-5 text-muted-foreground mt-0.5 flex-shrink-0" />
-              <div className="text-sm text-muted-foreground">
-                <p className="font-medium text-foreground mb-2">How we calculate your impact:</p>
-                <ul className="space-y-1 list-disc list-inside">
-                  <li><span className="font-medium">CO₂ Saved:</span> 0.5 kg per recycled item (average emissions prevented by recycling vs. landfill)</li>
-                  <li><span className="font-medium">Waste Diverted:</span> 0.2 kg per recycled item (average weight of recyclable materials kept out of landfills)</li>
-                  <li><span className="font-medium">Trees Saved:</span> 1 tree per 10 recycled items (based on paper/cardboard recycling impact)</li>
-                </ul>
+            <div className="pt-4 border-t border-white/20">
+              <div className="flex items-start gap-3">
+                <InfoIcon className="h-5 w-5 text-white/70 mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-white/80">
+                  <p className="font-medium text-white mb-2">How we calculate your impact:</p>
+                  <ul className="space-y-1 list-disc list-inside">
+                    <li><span className="font-medium">CO₂ Saved:</span> 0.5 kg per recycled item (average emissions prevented by recycling vs. landfill)</li>
+                    <li><span className="font-medium">Waste Diverted:</span> 0.2 kg per recycled item (average weight of recyclable materials kept out of landfills)</li>
+                    <li><span className="font-medium">Trees Saved:</span> 1 tree per 10 recycled items (based on paper/cardboard recycling impact)</li>
+                  </ul>
+                </div>
               </div>
             </div>
           </Card>
