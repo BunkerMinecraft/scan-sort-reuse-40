@@ -72,9 +72,6 @@ export const ClassificationResult = ({ result }: ClassificationResultProps) => {
               <h3 className="font-semibold text-lg">
                 {getCategoryTitle(category)}
               </h3>
-              {material && (
-                <p className="text-sm text-muted-foreground">{material}</p>
-              )}
             </div>
           </div>
           
