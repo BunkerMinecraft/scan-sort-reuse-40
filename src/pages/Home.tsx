@@ -2,13 +2,7 @@ import { Link } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ScanIcon, RecycleIcon, TrendingUpIcon, LeafIcon } from 'lucide-react';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 const Home = () => {
   return <div className="min-h-screen bg-gradient-subtle">
       {/* Hero Section */}
@@ -97,7 +91,7 @@ const Home = () => {
 
       {/* FAQ Section */}
       <section className="container mx-auto px-4 py-16">
-        <Card className="max-w-3xl mx-auto p-8 shadow-soft">
+        <Card className="max-w-3xl mx-auto p-8 rounded-sm shadow-xl opacity-95 border-2 border-green-50">
           <h2 className="text-3xl font-bold text-foreground mb-6">FAQ</h2>
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="confidence-score">
