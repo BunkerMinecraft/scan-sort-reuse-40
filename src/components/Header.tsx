@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LeafIcon, HomeIcon, LayoutDashboardIcon, ScanIcon, UserIcon, LogOutIcon, ShieldIcon, MoonIcon, SunIcon } from 'lucide-react';
+import { HomeIcon, LayoutDashboardIcon, ScanIcon, UserIcon, LogOutIcon, ShieldIcon, MoonIcon, SunIcon } from 'lucide-react';
+import logo from '@/assets/logo.png';
 import { Button } from '@/components/ui/button';
 import { useTheme } from 'next-themes';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -50,7 +51,7 @@ export const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <LeafIcon className="w-8 h-8 text-primary" />
+            <img src={logo} alt="Neurec AI Logo" className="w-8 h-8" />
             <h1 className="text-2xl font-bold text-foreground">Neurec AI</h1>
           </Link>
           
