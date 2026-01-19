@@ -8,9 +8,11 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   signUp: (email: string, password: string, firstName: string, lastName: string) => Promise<{ error: any }>;
-  signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signIn: (email: string, password: string, rememberMe?: boolean) => Promise<{ error: any }>;
   signInWithGoogle: () => Promise<{ error: any }>;
   signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error: any }>;
+  updatePassword: (newPassword: string) => Promise<{ error: any }>;
   loading: boolean;
 }
 
@@ -32,6 +34,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         
         if (event === 'SIGNED_IN') {
           navigate('/dashboard');
+        }
+        
+        if (event === 'PASSWORD_RECOVERY') {
+          navigate('/reset-password');
         }
       }
     );
@@ -70,14 +76,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } else {
       toast({
         title: 'Success!',
-        description: 'Account created successfully. You can now sign in.',
+        description: 'Please check your email to verify your account.',
       });
     }
 
     return { error };
   };
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (email: string, password: string, rememberMe: boolean = false) => {
+    // If "Remember me" is checked, we keep the default persistent session
+    // If not checked, we'll sign out when the browser closes (session storage behavior)
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -89,6 +97,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         description: error.message,
         variant: 'destructive',
       });
+    } else {
+      // Store remember me preference
+      if (rememberMe) {
+        localStorage.setItem('neurec_remember_me', 'true');
+      } else {
+        localStorage.removeItem('neurec_remember_me');
+      }
     }
 
     return { error };
@@ -113,10 +128,54 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { error };
   };
 
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+
+    if (error) {
+      toast({
+        title: 'Password reset failed',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } else {
+      toast({
+        title: 'Check your email',
+        description: 'We sent you a password reset link.',
+      });
+    }
+
+    return { error };
+  };
+
+  const updatePassword = async (newPassword: string) => {
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+
+    if (error) {
+      toast({
+        title: 'Password update failed',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } else {
+      toast({
+        title: 'Password updated',
+        description: 'Your password has been successfully updated.',
+      });
+      navigate('/dashboard');
+    }
+
+    return { error };
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
     setUser(null);
     setSession(null);
+    localStorage.removeItem('neurec_remember_me');
     navigate('/');
     toast({
       title: 'Signed out',
@@ -125,7 +184,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, signUp, signIn, signInWithGoogle, signOut, loading }}>
+    <AuthContext.Provider value={{ user, session, signUp, signIn, signInWithGoogle, signOut, resetPassword, updatePassword, loading }}>
       {children}
     </AuthContext.Provider>
   );

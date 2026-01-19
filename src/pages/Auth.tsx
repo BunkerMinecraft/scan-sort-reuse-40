@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useAuth } from '@/hooks/useAuth';
 import logo from '@/assets/logo.png';
 import { z } from 'zod';
+import { Link } from 'react-router-dom';
 
 const GoogleIcon = () => (
   <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -44,6 +46,7 @@ const signInSchema = z.object({
 const Auth = () => {
   const { signUp, signIn, signInWithGoogle } = useAuth();
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   
   // Sign up state
   const [signUpData, setSignUpData] = useState({
@@ -62,6 +65,14 @@ const Auth = () => {
   });
   const [signInErrors, setSignInErrors] = useState<Record<string, string>>({});
   const [isSignInLoading, setIsSignInLoading] = useState(false);
+
+  // Check for saved "remember me" preference
+  useEffect(() => {
+    const savedRememberMe = localStorage.getItem('neurec_remember_me');
+    if (savedRememberMe === 'true') {
+      setRememberMe(true);
+    }
+  }, []);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,7 +113,7 @@ const Auth = () => {
       signInSchema.parse(signInData);
       setIsSignInLoading(true);
       
-      await signIn(signInData.email, signInData.password);
+      await signIn(signInData.email, signInData.password, rememberMe);
     } catch (error) {
       if (error instanceof z.ZodError) {
         const errors: Record<string, string> = {};
@@ -160,6 +171,22 @@ const Auth = () => {
                 {signInErrors.password && (
                   <p className="text-sm text-destructive">{signInErrors.password}</p>
                 )}
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="remember-me"
+                    checked={rememberMe}
+                    onCheckedChange={(checked) => setRememberMe(checked === true)}
+                  />
+                  <Label htmlFor="remember-me" className="text-sm font-normal cursor-pointer">
+                    Remember me
+                  </Label>
+                </div>
+                <Link to="/forgot-password" className="text-sm text-primary hover:underline">
+                  Forgot password?
+                </Link>
               </div>
 
               <Button
@@ -253,6 +280,10 @@ const Auth = () => {
                   <p className="text-sm text-destructive">{signUpErrors.password}</p>
                 )}
               </div>
+
+              <p className="text-xs text-muted-foreground">
+                By signing up, you'll receive a verification email to confirm your account.
+              </p>
 
               <Button
                 type="submit"
